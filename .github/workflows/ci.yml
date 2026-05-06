@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install backend and CLI dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r app/backend/requirements.txt
+          python -m pip install -r cli/requirements.txt
+      - name: Run pytest
+        run: python -m pytest app/backend/tests cli/tests
+      - name: CLI smoke test
+        run: |
+          python -m cli.ilp scan examples/inventory.yml
+          python -m cli.ilp report examples/inventory.yml --output /tmp/report-sample.md
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install frontend dependencies
+        run: npm install
+      - name: Build frontend
+        run: npm run build
