@@ -1,0 +1,5 @@
+.venv/** linguist-vendored
+app/frontend/package-lock.json linguist-generated
+app/frontend/tsconfig*.tsbuildinfo linguist-generated
+docs/** linguist-documentation
+runbooks/** linguist-documentation
